@@ -1,24 +1,24 @@
 param (
     [Parameter(Mandatory=$true)]
     [ValidateScript({Test-Path $_ -PathType 'Container'})]
-    [string]$cartellaOrigine,
+    [string]$source_directory,
     
     [Parameter(Mandatory=$true)]
-    [string]$cartellaDestinazione
+    [string]$destination_directory
 )
 
-# Seleziona solo i file con estensione ".xmp" nella cartella di origine
-$filesXMP = Get-ChildItem $cartellaOrigine | Where-Object {$_.Extension -eq ".xmp"}
+# Select only files with extension ".xmp" in source_directory
+$filesXMP = Get-ChildItem $source_directory | Where-Object {$_.Extension -eq ".xmp"}
 
-# Itera sui file .xmp trovati
+# work on .xmp files
 foreach ($fileXMP in $filesXMP) {
-    $nomeFileBase = $fileXMP.BaseName
+    $base_file_name = $fileXMP.BaseName
     
-    # Seleziona tutti i file con lo stesso nome di base del file .xmp nella cartella di origine
-    $filesDaSpostare = Get-ChildItem $cartellaOrigine | Where-Object {$_.BaseName -eq $nomeFileBase}
+    # Select all files with the same name as the .xmp file
+    $files_to_move = Get-ChildItem $source_directory | Where-Object {$_.BaseName -eq $base_file_name}
     
-    # Sposta tutti i file con lo stesso nome nella cartella di destinazione
-    foreach ($file in $filesDaSpostare) {
-        Move-Item $file.FullName $cartellaDestinazione
+    # move all file with the same name in the destination_directory
+    foreach ($file in $files_to_move) {
+        Move-Item $file.FullName $destination_directory
     }
 }
